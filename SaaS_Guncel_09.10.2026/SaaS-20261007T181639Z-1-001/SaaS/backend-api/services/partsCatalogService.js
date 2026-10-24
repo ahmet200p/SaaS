@@ -5,16 +5,25 @@
 
 const axios = require('axios');
 
-const BASE_URL = (process.env.PARTS_CATALOG_BASE_URL || 'https://api.parts-catalogs.com').replace(/\/+$/, '');
-const API_KEY = (process.env.PARTS_CATALOG_API_KEY || 'OEM-API-BD39DFA8-9AE9-4E7F-8B6D-3D1011BF973F').trim();
+function getApiKey() {
+  const raw = process.env.PARTS_CATALOG_API_KEY || process.env.PARTS_CATALOGS_API_KEY || '';
+  return String(raw).replace(/^"|"$/g, '').trim();
+}
+
+function getBaseUrl() {
+  return (process.env.PARTS_CATALOG_BASE_URL || 'https://api.parts-catalogs.com').replace(/\/+$/, '');
+}
+
+const BASE_URL = getBaseUrl();
 
 /**
  * Ortak API Başlıkları Konfigürasyonu
  */
 function getRequestHeaders() {
+  const key = getApiKey();
   return {
-    'Authorization': API_KEY, // Parts-Catalogs OAS 3.0 doğrudan anahtar bekler
-    'X-API-KEY': API_KEY,
+    'Authorization': key,
+    'X-API-KEY': key,
     'Accept': 'application/json',
     'Accept-Language': 'en',
     'User-Agent': 'SaaS-Parts-Catalog-Client/2026'

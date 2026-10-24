@@ -1,5 +1,9 @@
-"Bayi frontend'i oturum açmış kullanıcının güncel bilgilerini çekerken (/api/auth/me veya ilgili profil endpoint'i), onay durumu (Tenant status) eski/hatalı geliyor olabilir.
+Kritik Güvenlik Zafiyeti: Parts Catalogs API key'imiz frontend tarafında (Network sekmesinde) ifşa oluyor. Bu durumu çözmek için backend'de bir proxy (aracı) mekanizması kurmalıyız.
 
-/api/auth/me (veya ilgili profil getirme) controller'ını kontrol et. Bu endpoint çalıştırıldığında veritabanından (Prisma) Tenant tablosuna include veya join ile anlık sorgu atarak güncel status (veya isActive) bilgisini alıp JSON yanıtına eklediğinden emin ol.
+Dış API'ye ait gizli anahtarı (API_KEY) sadece backend'in .env dosyasında tut ve kod içinde process.env üzerinden çağır.
 
-Giriş yapıldığında oluşturulan JWT Token payload'unun içine statik statü bilgisi gömme; statü kontrollerini her zaman veritabanından anlık (real-time) olarak çekerek doğrula."
+/api/catalog/search-vin/:vin endpoint'ini (şasi sorgulama controller'ını) güncelle. Frontend artık doğrudan dışarıya değil, sana (bu endpoint'e) istek atacak.
+
+Bu controller, frontend'den şasi numarasını (vin) alsın, backend sunucusu üzerinden (sunucudan sunucuya) api.parts-catalogs.com adresine kendi gizli API key'ini kullanarak istek atsın.
+
+Dış API'den gelen veriyi alıp frontend'e temiz bir JSON olarak (başarılıysa data, başarısızsa hata mesajı) döndür.

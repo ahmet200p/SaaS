@@ -122,11 +122,7 @@ router.get('/search-vin/:vin', async (req, res) => {
 
     return res.status(statusCode).json({
       success: false,
-      statusCode: statusCode,
-      statusText: error.statusText || 'Error',
-      message: error.message || 'Şasi (VIN) sorgulaması gerçekleştirilemedi.',
-      targetUrl: error.targetUrl,
-      rawApiResponse: error.apiResponse || null
+      message: error.message || 'Şasi (VIN) sorgulaması gerçekleştirilemedi.'
     });
   }
 });
@@ -152,7 +148,7 @@ router.get(['/brands', '/catalogs'], async (req, res) => {
   }
 
   try {
-    const apiKey = process.env.PARTS_CATALOG_API_KEY || 'OEM-API-BD39DFA8-9AE9-4E7F-8B6D-3D1011BF973F';
+    const apiKey = (process.env.PARTS_CATALOG_API_KEY || process.env.PARTS_CATALOGS_API_KEY || '').replace(/^"|"$/g, '').trim();
     const baseUrl = process.env.PARTS_CATALOG_BASE_URL || 'https://api.parts-catalogs.com';
     const response = await axios.get(`${baseUrl}/v1/catalogs/`, {
       headers: {
@@ -200,7 +196,7 @@ router.get('/brands/:brandId/models', async (req, res) => {
   }
 
   try {
-    const apiKey = process.env.PARTS_CATALOG_API_KEY || 'OEM-API-BD39DFA8-9AE9-4E7F-8B6D-3D1011BF973F';
+    const apiKey = (process.env.PARTS_CATALOG_API_KEY || process.env.PARTS_CATALOGS_API_KEY || '').replace(/^"|"$/g, '').trim();
     const baseUrl = process.env.PARTS_CATALOG_BASE_URL || 'https://api.parts-catalogs.com';
     const response = await axios.get(`${baseUrl}/v1/catalogs/${encodeURIComponent(brandId)}/models/`, {
       headers: {
